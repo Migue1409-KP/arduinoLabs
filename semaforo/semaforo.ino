@@ -1,14 +1,15 @@
 // Definición de pines
+const int botonPin = 3;
 const int rojoPin = 4;
 const int verdePin = 5;
-const int botonPin = 3;
+
 // Constantes para los estados del semáforo
 const int ESTADO_ROJO = 0;
 const int ESTADO_AMARILLO = 1;
 const int ESTADO_VERDE = 2;
-int estadoAnterior = ESTADO_ROJO;
 
 // Variables de estado
+int estadoAnterior = ESTADO_ROJO;
 int estadoActual = ESTADO_ROJO;
 bool botonPresionado = false;
 
@@ -16,7 +17,7 @@ void setup() {
   // Configurar pines como salida
   pinMode(rojoPin, OUTPUT);
   pinMode(verdePin, OUTPUT);
-  
+
   // Configurar pin del botón como entrada, input_pullup invierte el high y low
   pinMode(botonPin, INPUT_PULLUP);
 
@@ -27,7 +28,7 @@ void setup() {
 
 void loop() {
   // Leer estado del botón
-  botonPresionado = digitalRead(botonPin) == LOW;
+  botonPresionado = digitalRead(botonPin);
 
   // Encender/apagar LEDs según estado actual
   digitalWrite(rojoPin, estadoActual == ESTADO_ROJO || estadoActual == ESTADO_AMARILLO ? HIGH : LOW);
@@ -42,13 +43,8 @@ void loop() {
       break;
     case ESTADO_AMARILLO:
       delay(2000);
-      if(estadoAnterior == ESTADO_ROJO){
-        estadoAnterior = estadoActual;
-        estadoActual = ESTADO_VERDE;
-      } else {
-        estadoAnterior = estadoActual;
-        estadoActual = ESTADO_ROJO;
-      }
+      estadoActual = estadoAnterior == ESTADO_ROJO ? ESTADO_VERDE : ESTADO_ROJO;
+      estadoAnterior = ESTADO_AMARILLO;
       break;
     case ESTADO_VERDE:
       delay(4000);
