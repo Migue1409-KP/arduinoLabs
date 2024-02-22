@@ -12,6 +12,11 @@ const int ESTADO_VERDE = 2;
 int estadoAnterior = ESTADO_ROJO;
 int estadoActual = ESTADO_ROJO;
 bool botonPresionado = false;
+int time = 4000;
+
+void bottonAction() {
+  botonPresionado = true;
+}
 
 void setup() {
   // Configurar pines como salida
@@ -20,6 +25,9 @@ void setup() {
 
   // Configurar pin del botón como entrada, input_pullup invierte el high y low
   pinMode(botonPin, INPUT_PULLUP);
+  attachInterrupt(digitalPinToInterrupt(botonPin),
+                  bottonAction,
+                  FALLING);
 
   // Apagar LEDs al inicio
   digitalWrite(rojoPin, LOW);
@@ -27,8 +35,19 @@ void setup() {
 }
 
 void loop() {
-  // Leer estado del botón
-  botonPresionado = digitalRead(botonPin);
+  time = 4000;
+  if(botonPresionado){
+    if(estadoAnterior == ESTADO_ROJO){
+      delay(time/2);
+      estadoActual = ESTADO_AMARILLO;
+      estadoAnterior = ESTADO_ROJO;
+    } else{
+      estadoActual = ESTADO_AMARILLO;
+      estadoAnterior = ESTADO_VERDE;
+      time = 1000;
+    }
+    botonPresionado = false;
+  }
 
   // Encender/apagar LEDs según estado actual
   digitalWrite(rojoPin, estadoActual == ESTADO_ROJO || estadoActual == ESTADO_AMARILLO ? HIGH : LOW);
@@ -37,17 +56,17 @@ void loop() {
   // Actualizar estado del semáforo
   switch (estadoActual) {
     case ESTADO_ROJO:
-      delay(4000);
+      delay(time);
       estadoAnterior = estadoActual;
       estadoActual = ESTADO_AMARILLO;
       break;
     case ESTADO_AMARILLO:
-      delay(2000);
+      delay(time/2);
       estadoActual = estadoAnterior == ESTADO_ROJO ? ESTADO_VERDE : ESTADO_ROJO;
-      estadoAnterior = ESTADO_AMARILLO;
+      estadoAnterior = ESTADO_AMARILLO;   
       break;
     case ESTADO_VERDE:
-      delay(4000);
+      delay(time);
       estadoAnterior = estadoActual;
       estadoActual = ESTADO_AMARILLO;
       break;
