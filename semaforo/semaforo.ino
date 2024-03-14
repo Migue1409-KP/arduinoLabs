@@ -1,4 +1,5 @@
 // Definición de pines
+const int botonPin2 = 2;
 const int botonPin = 3;
 const int rojoPin = 4;
 const int verdePin = 5;
@@ -25,9 +26,15 @@ void setup() {
 
   // Configurar pin del botón como entrada, input_pullup invierte el high y low
   pinMode(botonPin, INPUT_PULLUP);
+  pinMode(botonPin2, INPUT_PULLUP);
   attachInterrupt(digitalPinToInterrupt(botonPin),
                   bottonAction,
                   FALLING);
+
+  attachInterrupt(digitalPinToInterrupt(botonPin2),
+                  bottonAction,
+                  FALLING);
+
 
   // Apagar LEDs al inicio
   digitalWrite(rojoPin, LOW);
@@ -42,9 +49,9 @@ void loop() {
       estadoActual = ESTADO_AMARILLO;
       estadoAnterior = ESTADO_ROJO;
     } else{
-      estadoActual = ESTADO_AMARILLO;
-      estadoAnterior = ESTADO_VERDE;
-      time = 1000;
+      estadoActual = ESTADO_ROJO;
+      estadoAnterior = ESTADO_AMARILLO;
+      time = 10000;
     }
     botonPresionado = false;
   }
